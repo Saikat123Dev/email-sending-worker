@@ -38,23 +38,27 @@ async function processEmailQueue() {
       const mailOptions = {
         from: `JWoC Team <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: "Urgent: Complete the Mentor Form to Confirm Your Assignment",
-        text: `Dear Mentor,
+        subject: "🚀 JWoC Coding Phase 1 Begins on 10th February 2025 – Join Our Official Discord Channel",
+        text: `Dear Participant,
 
-I hope you're doing well!
+We are pleased to inform you that Coding Phase 1 of JWoC is scheduled to commence on 10th February 2025. As we embark on this exciting journey, we encourage you to join our official Discord channel to stay informed, connect with mentors, and access all necessary resources.
 
-To proceed with your mentor assignment, please complete the following Google Form as soon as possible:
+📌 Join our official Discord channel here:https://discord.gg/VW83TAydPx
 
-https://docs.google.com/forms/d/e/1FAIpQLSfKXaggTIsDDqKsNSqTc-1rOlcRQmjYK5J2IUOWBQgfP0NrcA/viewform?usp=sharing
+Why should you join?
 
-🔹 Important Note: We have noticed that some submissions contain incorrect or incomplete information. Please ensure that you carefully review your responses before submitting the form. In case you have already submitted incorrect details, kindly fill out the form again with the correct information.
+    Receive important updates and announcements in real time
+    Engage with mentors and fellow participants
+    Seek guidance and resolve queries promptly
+    Participate in discussions, learning sessions, and community activities
 
-Your accurate submission is essential for us to assign you as a mentor. If you have already filled out the form correctly, please disregard this message.
+Your active participation will be instrumental in making the most of this opportunity. Should you have any questions, please feel free to reach out.
 
-For any questions or clarifications, feel free to reach out. We truly appreciate your time and support in making this program a success!
+We look forward to your enthusiastic involvement!
 
-Best regards,
-JWoC Team`,
+Best Regards,
+JWoC Team
+`,
       };
 
       await transporter.sendMail(mailOptions);
