@@ -1,21 +1,17 @@
 import dotenv from "dotenv";
-import express from "express";
 import nodemailer from "nodemailer";
 import { createClient } from "redis";
 
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
+// Initialize Redis client
 const client = createClient({
-  url:process.env.REDIS_URL
+  url: process.env.REDIS_URL,
 });
 
-client.on("error", (err) => console.log("Redis Client Error", err));
+client.on("error", (err) => console.error("Redis Client Error:", err));
 
-await client.connect();
-
+// Nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -24,22 +20,26 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to process email queue
+// Function to process email queue continuously
 async function processEmailQueue() {
-  try {
-    const email = await client.lPop("emailQueue");
+  console.log("🚀 Email worker started...");
+  while (true) {
+    try {
+      const email = await client.lPop("emailQueue"); // Fetch and remove the oldest email
 
-    if (!email) {
-      return { success: false, message: "No emails in queue." };
-    }
+      if (!email) {
+        console.log("📭 No emails in queue. Waiting...");
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds before checking again
+        continue;
+      }
 
-    console.log(`Sending email to: ${email}`);
+      console.log(`📧 Sending email to: ${email}`);
 
-    const mailOptions = {
-      from: `jwoc.official.2025@gmail.com`,
-      to: email,
-      subject: "Urgent: Complete the Mentor Form to Confirm Your Assignment",
-      text: `Dear Mentor,
+      const mailOptions = {
+        from: `JWoC Team <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "Urgent: Complete the Mentor Form to Confirm Your Assignment",
+        text: `Dear Mentor,
 
 I hope you're doing well!
 
@@ -55,25 +55,34 @@ For any questions or clarifications, feel free to reach out. We truly appreciate
 
 Best regards,
 JWoC Team`,
-    };
+      };
 
-    await transporter.sendMail(mailOptions);
-    console.log(`Email sent successfully to ${email}`);
+      await transporter.sendMail(mailOptions);
+      console.log(`✅ Email sent successfully to ${email}`);
 
-    return { success: true, message: `Email sent successfully to ${email}` };
-  } catch (error) {
-    console.error("Error processing email queue:", error);
-    return { success: false, message: "Failed to send email." };
+    } catch (error) {
+      console.error("❌ Error processing email queue:", error);
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Avoid rapid failures
+    }
   }
 }
 
-// HTTP endpoint to trigger email sending
-app.post("/send-email", async (req, res) => {
-  const result = await processEmailQueue();
-  res.json(result);
-});
+// Start Redis and run the worker
+async function startWorker() {
+  try {
+    await client.connect();
+    console.log("🔗 Connected to Redis.");
+    await processEmailQueue();
+  } catch (err) {
+    console.error("❌ Failed to start worker:", err);
+  }
+}
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+startWorker();
+
+// Graceful shutdown on exit
+process.on("SIGINT", async () => {
+  console.log("⚠️ Shutting down worker...");
+  await client.quit();
+  process.exit(0);
 });
