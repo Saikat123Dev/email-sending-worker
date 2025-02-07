@@ -41,13 +41,17 @@ async function processEmailQueue() {
       subject: "Urgent: Complete the Mentor Form to Confirm Your Assignment",
       text: `Dear Mentor,
 
-We hope you're doing well!
+I hope you're doing well!
 
-To proceed with your mentor assignment, please fill out this Google Form as soon as possible: https://docs.google.com/forms/d/e/1FAIpQLSfKXaggTIsDDqKsNSqTc-1rOlcRQmjYK5J2IUOWBQgfP0NrcA/viewform?usp=sharing.
+To proceed with your mentor assignment, please complete the following Google Form as soon as possible:
 
-Without this, we won’t be able to assign you as a mentor. If you have any questions, feel free to reach out.
+https://docs.google.com/forms/d/e/1FAIpQLSfKXaggTIsDDqKsNSqTc-1rOlcRQmjYK5J2IUOWBQgfP0NrcA/viewform?usp=sharing
 
-Thank you for your time and support!
+🔹 Important Note: We have noticed that some submissions contain incorrect or incomplete information. Please ensure that you carefully review your responses before submitting the form. In case you have already submitted incorrect details, kindly fill out the form again with the correct information.
+
+Your accurate submission is essential for us to assign you as a mentor. If you have already filled out the form correctly, please disregard this message.
+
+For any questions or clarifications, feel free to reach out. We truly appreciate your time and support in making this program a success!
 
 Best regards,
 JWoC Team`,
